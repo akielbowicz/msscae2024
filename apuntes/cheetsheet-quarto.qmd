@@ -1,0 +1,8 @@
+# Pruebas de Quarto
+
+[Documentacion](https://quarto.org/docs/guide/) de Quarto
+
+```{julia}
+x = 100
+y = collect(3:x)
+```
