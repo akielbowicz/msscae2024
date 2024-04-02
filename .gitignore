@@ -27,3 +27,5 @@ Manifest.toml
 .venv
 *_files/
 apuntes/*.html
+/.quarto/
+_docs
