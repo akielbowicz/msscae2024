@@ -1,0 +1,16 @@
+[
+  {
+    "objectID": "log.html",
+    "href": "log.html",
+    "title": "",
+    "section": "",
+    "text": "2024-03-14 (π day!)\n\nConfiguro el ambiente de python con jupyter para poder usar Quarto Preview en VSCode python -m venv .venv     ./.venv/Scripts/Activate.ps1 # En pwsh     python -m pip install -r requirements.txt\nConfiguro el devcontainer con las extensiones necesarias\nConfiguro el ambiente de julia para usar Quarto y Pluto"
+  },
+  {
+    "objectID": "apuntes/cheetsheet-quarto.html",
+    "href": "apuntes/cheetsheet-quarto.html",
+    "title": "Pruebas de Quarto",
+    "section": "",
+    "text": "Documentacion de Quarto\n\nx = 100\ny = collect(3:x)\n\n98-element Vector{Int64}:\n   3\n   4\n   5\n   6\n   7\n   8\n   9\n  10\n  11\n  12\n  13\n  14\n  15\n   ⋮\n  89\n  90\n  91\n  92\n  93\n  94\n  95\n  96\n  97\n  98\n  99\n 100"
+  }
+]
