@@ -1,4 +1,11 @@
 
+**2024-04-02**
+
+
+- Configuro repo para publicar los documentos que genera quarto con GHA
+https://quarto.org/docs/publishing/github-pages.html#github-action
+
+
 **2024-03-14** (π day!)
 
 - Configuro el ambiente de python con jupyter para poder usar Quarto Preview en VSCode
