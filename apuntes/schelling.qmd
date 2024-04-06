@@ -1,0 +1,22 @@
+# Modelo de Schelling
+
+El [tutorial de `Agents.jl`](https://juliadynamics.github.io/Agents.jl/stable/tutorial/)  introduce el modelo de Schelling y lo vamos a reproducir acá.
+
+```{julia}
+using Agents
+```
+
+## Paso 1 - Definir el espacio
+
+## Paso 2 - Definir los agentes
+
+## Paso 3 - Definir las reglas de evolución
+
+## Paso 4 - Inicializar el modelo
+
+## Paso 5 - Evolucionar el sistema
+
+## Paso 6 - Visualizar el sistema
+
+## Paso 7 - Colectar datos del sistema
+

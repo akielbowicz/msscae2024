@@ -1,0 +1,7 @@
+
+Para hacer las simulaciones voy a probar [Agents.jl](https://juliadynamics.github.io/Agents.jl/stable/). Hay un buen tutorial introductorio en el siguiente video [Agents.jl: Introductory Tutorial](https://www.youtube.com/watch?v=fgwAfAa4kt0&pp=ygUJYWdlbnRzLmps)
+
+
+[Modelo de Schelling](schelling.qmd)
+
+[Cheat Sheet de Quarto](./cheetsheet-quarto.qmd)
