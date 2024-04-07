@@ -8,15 +8,146 @@ using Agents
 
 ## Paso 1 - Definir el espacio
 
+```{julia}
+size = (30, 30)
+espacio = GridSpaceSingle(size; periodic=false, metric=:chebyshev)
+```
+
 ## Paso 2 - Definir los agentes
+
+```{julia}
+@agent struct Individuo(GridAgent{2})
+    satisfecho::Bool
+    grupo::Int
+end
+```
+
+```{julia}
+i0 = Individuo(id=0, pos=(1,1), satisfecho=false,grupo=1)
+```
 
 ## Paso 3 - Definir las reglas de evolución
 
+```{julia}
+function schelling_step!(agente, modelo)
+    tolerancia = modelo.tolerancia
+    vecinos_de_mismo_grupo = 0
+
+    for vecino in nearby_agents(agente, modelo)
+        if agente.grupo == vecino.grupo
+            vecinos_de_mismo_grupo += 1
+        end
+    end
+
+    if vecinos_de_mismo_grupo ≥ tolerancia # \ge y tab para hacer el simbolo de mayor o igual
+        agente.satisfecho = true
+    else
+        agente.satisfecho = false
+        move_agent_single!(agente, modelo)
+    end
+
+    return
+end
+```
+
 ## Paso 4 - Inicializar el modelo
+
+```{julia}
+using Random: Xoshiro
+seed = 1234
+rng = Xoshiro(seed)
+properties = Dict(:tolerancia => 3)
+
+modelo = StandardABM(Individuo, espacio; properties, (agent_step!)=step!, rng)
+```
+
+```{julia}
+ag0 = add_agent_single!(modelo; satisfecho=false, grupo=1)
+```
+
+```{julia}
+schelling_step!(ag0, modelo)
+```
+
+### Crear funcion de inicializacion del sistema 
+
+```{julia}
+function inicializar(; total_agentes=900, tamano_grilla=(30, 30), tolerancia=3, rng_seed=123, grilla_periodica=true)
+
+    space = GridSpaceSingle(tamano_grilla; periodic=grilla_periodica)
+    properties = Dict(:tolerancia => tolerancia)
+    rng = Xoshiro(rng_seed)
+    model = StandardABM(
+        Individuo, space;
+        agent_step! = schelling_step!, properties, rng,
+        container=Vector, # agents are not removed, so we us this
+        scheduler=Schedulers.Randomly() # all agents are activated once at random
+    )
+
+    # Inicializo los agentes de manera aleatoria
+    for n in 1:total_agentes
+        add_agent_single!(model; satisfecho=false, grupo=n < total_agentes / 2 ? 1 : 2)
+    end
+
+    return model
+
+end
+
+schelling = inicializar()
+
+```
 
 ## Paso 5 - Evolucionar el sistema
 
+```{julia}
+step!(schelling)
+```
+
+
+```{julia}
+n_pasos = 3
+step!(schelling, n_pasos)
+```
+
+```{julia}
+condicion_terminacion(modelo, tiempo) = tiempo <= 150
+step!(schelling, condicion_terminacion)
+```
+
 ## Paso 6 - Visualizar el sistema
+
+```{julia}
+using CairoMakie
+# using WGLMakie
+```
+
+
+```{julia}
+colorsatisfecho(agente) = agente.satisfecho == 1 ? :red : :green
+colorgrupo(agente) = agente.satisfecho == 1 ? :red : :green
+markergrupo(agente) = agente.grupo == 1 ? :circle : :rect
+
+figure, _ = abmplot(schelling; agent_color = colorsatisfecho, agent_marker = markergrupo, as = 10)
+figure # returning the figure displays it
+```
+
+Para crear una visualizacion interactiva
+```{julia}
+# using GLMakie
+# figure, _ = abmplot(schelling; add_controls=true, agent_color = colorsatisfecho, agent_marker = markergrupo, as = 10)
+# figure # returning the figure displays it
+```
 
 ## Paso 7 - Colectar datos del sistema
 
+```{julia}
+adata = [:pos, :satisfecho, :grupo]
+
+schelling = inicializar()
+pasos = 5
+
+# Colectamos datos de los agentes y del modelo/sistema
+adf, mdf = run!(schelling, pasos; adata) 
+
+adf[end-10:end, :] # display only the last few rows
+```

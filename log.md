@@ -1,3 +1,10 @@
+**2024-04-07**
+
+
+
+Hay un problema, si el sistema esta completo `move_agent_single!` no sirve.
+
+Completo el setup de Schelling con Agents.jl.
 
 **2024-04-02**
 
