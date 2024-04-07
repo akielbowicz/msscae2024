@@ -29,8 +29,7 @@ i0 = Individuo(id=0, pos=(1,1), satisfecho=false,grupo=1)
 ## Paso 3 - Definir las reglas de evolución
 
 ```{julia}
-function schelling_step!(agente, modelo)
-    tolerancia = modelo.tolerancia
+function vecinos_mismo_grupo(agente, modelo)
     vecinos_de_mismo_grupo = 0
 
     for vecino in nearby_agents(agente, modelo)
@@ -38,12 +37,23 @@ function schelling_step!(agente, modelo)
             vecinos_de_mismo_grupo += 1
         end
     end
+    vecinos_de_mismo_grupo
+end
 
-    if vecinos_de_mismo_grupo ≥ tolerancia # \ge y tab para hacer el simbolo de mayor o igual
+function schelling_step!(agente, modelo)
+    tolerancia = modelo.tolerancia
+    
+    satisfecho(agente) = vecinos_mismo_grupo(agente, modelo) ≥ tolerancia
+    
+    if  satisfecho(agente)# \ge y tab para hacer el simbolo de mayor o igual
         agente.satisfecho = true
     else
-        agente.satisfecho = false
-        move_agent_single!(agente, modelo)
+        es_distinto(a) = a.id != agente.id && !satisfecho(a)
+        otro_agente = random_agent(modelo, es_distinto)
+        swap_agents!(agente, otro_agente, modelo)
+
+        agente.satisfecho = satisfecho(agente)
+        otro_agente.satisfecho = satisfecho(agente)
     end
 
     return
@@ -56,28 +66,35 @@ end
 using Random: Xoshiro
 seed = 1234
 rng = Xoshiro(seed)
-properties = Dict(:tolerancia => 3)
+```
 
-modelo = StandardABM(Individuo, espacio; properties, (agent_step!)=step!, rng)
+```{julia}
+properties = Dict(:tolerancia => 3)
+modelo = StandardABM(Individuo, espacio; properties, agent_step! =schelling_step!, rng)
 ```
 
 ```{julia}
 ag0 = add_agent_single!(modelo; satisfecho=false, grupo=1)
+ag1 = add_agent_single!(modelo; satisfecho=false, grupo=1)
+
 ```
 
 ```{julia}
-schelling_step!(ag0, modelo)
+step!(modelo)
 ```
 
-### Crear funcion de inicializacion del sistema 
+### Crear funcion de inicializacion del sistema integrando todo lo anterior
 
 ```{julia}
-function inicializar(; total_agentes=900, tamano_grilla=(30, 30), tolerancia=3, rng_seed=123, grilla_periodica=true)
+function inicializar(; total_agentes=nothing, tamano_grilla=(30, 30), tolerancia=3, rng_seed=123, grilla_periodica=true)
+    if isnothing(total_agentes)
+        total_agentes = prod(tamano_grilla)::Int
+    end
 
     space = GridSpaceSingle(tamano_grilla; periodic=grilla_periodica)
     properties = Dict(:tolerancia => tolerancia)
     rng = Xoshiro(rng_seed)
-    model = StandardABM(
+    modelo = StandardABM(
         Individuo, space;
         agent_step! = schelling_step!, properties, rng,
         container=Vector, # agents are not removed, so we us this
@@ -86,10 +103,16 @@ function inicializar(; total_agentes=900, tamano_grilla=(30, 30), tolerancia=3, 
 
     # Inicializo los agentes de manera aleatoria
     for n in 1:total_agentes
-        add_agent_single!(model; satisfecho=false, grupo=n < total_agentes / 2 ? 1 : 2)
+        add_agent_single!(modelo; satisfecho=false, grupo=n < total_agentes / 2 ? 1 : 2)
     end
 
-    return model
+    satisfecho(agente) = vecinos_mismo_grupo(agente,modelo) ≥ modelo.tolerancia
+
+    for ag in allagents(modelo)
+        ag.satisfecho = satisfecho(ag)
+    end
+
+    return modelo
 
 end
 
@@ -117,16 +140,19 @@ step!(schelling, condicion_terminacion)
 ## Paso 6 - Visualizar el sistema
 
 ```{julia}
-using CairoMakie
-# using WGLMakie
+# using CairoMakie
+using WGLMakie
 ```
 
 
 ```{julia}
-colorsatisfecho(agente) = agente.satisfecho == 1 ? :red : :green
-colorgrupo(agente) = agente.satisfecho == 1 ? :red : :green
+colorsatisfecho(agente) = (!agente.satisfecho ? :red
+                         : agente.grupo == 1 ? :blue : :green)
+colorgrupo(agente) = agente.grupo == 1 ? :red : :green
 markergrupo(agente) = agente.grupo == 1 ? :circle : :rect
+```
 
+```{julia}
 figure, _ = abmplot(schelling; agent_color = colorsatisfecho, agent_marker = markergrupo, as = 10)
 figure # returning the figure displays it
 ```
@@ -134,8 +160,8 @@ figure # returning the figure displays it
 Para crear una visualizacion interactiva
 ```{julia}
 # using GLMakie
-# figure, _ = abmplot(schelling; add_controls=true, agent_color = colorsatisfecho, agent_marker = markergrupo, as = 10)
-# figure # returning the figure displays it
+figure, _ = abmplot(schelling; add_controls=true, agent_color = colorsatisfecho, agent_marker = markergrupo, as = 10)
+figure # returning the figure displays it
 ```
 
 ## Paso 7 - Colectar datos del sistema
