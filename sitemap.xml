@@ -1,19 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>git@ak:akielbowicz/msscae2024.git/log.html</loc>
-    <lastmod>2024-04-07T23:53:38.162Z</lastmod>
-  </url>
-  <url>
-    <loc>git@ak:akielbowicz/msscae2024.git/apuntes/index.html</loc>
-    <lastmod>2024-04-07T23:53:38.162Z</lastmod>
+    <loc>git@ak:akielbowicz/msscae2024.git/apuntes/schelling.html</loc>
+    <lastmod>2024-04-08T00:49:15.583Z</lastmod>
   </url>
   <url>
     <loc>git@ak:akielbowicz/msscae2024.git/apuntes/cheatsheet-quarto.html</loc>
     <lastmod>2024-04-07T23:53:38.162Z</lastmod>
   </url>
   <url>
-    <loc>git@ak:akielbowicz/msscae2024.git/apuntes/schelling.html</loc>
-    <lastmod>2024-04-08T00:49:15.583Z</lastmod>
+    <loc>git@ak:akielbowicz/msscae2024.git/apuntes/index.html</loc>
+    <lastmod>2024-04-07T23:53:38.162Z</lastmod>
   </url>
 </urlset>

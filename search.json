@@ -1,26 +1,5 @@
 [
   {
-    "objectID": "log.html",
-    "href": "log.html",
-    "title": "",
-    "section": "",
-    "text": "2024-04-07\nHay un problema, si el sistema esta completo move_agent_single! no sirve.\nCompleto el setup de Schelling con Agents.jl.\n2024-04-02\n\nConfiguro repo para publicar los documentos que genera quarto con GHA https://quarto.org/docs/publishing/github-pages.html#github-action\n\n2024-03-14 (π day!)\n\nConfiguro el ambiente de python con jupyter para poder usar Quarto Preview en VSCode python -m venv .venv     ./.venv/Scripts/Activate.ps1 # En pwsh     python -m pip install -r requirements.txt\nConfiguro el devcontainer con las extensiones necesarias\nConfiguro el ambiente de julia para usar Quarto y Pluto"
-  },
-  {
-    "objectID": "apuntes/index.html",
-    "href": "apuntes/index.html",
-    "title": "",
-    "section": "",
-    "text": "Para hacer las simulaciones voy a probar Agents.jl. Hay un buen tutorial introductorio en el siguiente video Agents.jl: Introductory Tutorial\nModelo de Schelling\nCheat Sheet de Quarto"
-  },
-  {
-    "objectID": "apuntes/cheatsheet-quarto.html",
-    "href": "apuntes/cheatsheet-quarto.html",
-    "title": "Pruebas de Quarto",
-    "section": "",
-    "text": "Documentacion de Quarto\n\nx = 100\ny = collect(3:x)\n\n98-element Vector{Int64}:\n   3\n   4\n   5\n   6\n   7\n   8\n   9\n  10\n  11\n  12\n  13\n  14\n  15\n   ⋮\n  89\n  90\n  91\n  92\n  93\n  94\n  95\n  96\n  97\n  98\n  99\n 100"
-  },
-  {
     "objectID": "apuntes/schelling.html",
     "href": "apuntes/schelling.html",
     "title": "Modelo de Schelling",
@@ -75,5 +54,22 @@
     "title": "Modelo de Schelling",
     "section": "Paso 7 - Colectar datos del sistema",
     "text": "Paso 7 - Colectar datos del sistema\n\nadata = [:pos, :satisfecho, :grupo]\n\nschelling = inicializar()\npasos = 5\n\n# Colectamos datos de los agentes y del modelo/sistema\nadf, mdf = run!(schelling, pasos; adata) \n\nadf[end-10:end, :] # display only the last few rows\n\n\n11×5 DataFrame\n\n\n\nRow\ntime\nid\npos\nsatisfecho\ngrupo\n\n\n\nInt64\nInt64\nTuple…\nBool\nInt64\n\n\n\n\n1\n5\n890\n(17, 27)\ntrue\n2\n\n\n2\n5\n891\n(26, 24)\ntrue\n2\n\n\n3\n5\n892\n(30, 11)\ntrue\n2\n\n\n4\n5\n893\n(19, 5)\ntrue\n2\n\n\n5\n5\n894\n(27, 26)\ntrue\n2\n\n\n6\n5\n895\n(9, 16)\ntrue\n2\n\n\n7\n5\n896\n(4, 1)\ntrue\n2\n\n\n8\n5\n897\n(27, 15)\ntrue\n2\n\n\n9\n5\n898\n(16, 15)\ntrue\n2\n\n\n10\n5\n899\n(12, 8)\ntrue\n2\n\n\n11\n5\n900\n(2, 29)\ntrue\n2\n\n\n\n\n\n\n\n\nAnálisis completo\n\nadata = [(:satisfecho, sum )]\n\npasos = 150\n\nf = Figure()\nax = Axis(f[1,1], title=\"Evolución de satisfacción\", xlabel = \"paso\", ylabel = \"Cantidad de agentes satisfechos\")\n\nfor tol in 3:7\nschelling = inicializar(;tolerancia=tol)\n\n# Colectamos datos de los agentes y del modelo/sistema\nadf, _ = run!(schelling, pasos; adata) \n\nlines!(ax, adf.time,adf.sum_satisfecho, label=\"tol = $tol\")\n\nend \n\naxislegend()\nf\n\n┌ Warning: Found `resolution` in the theme when creating a `Scene`. The `resolution` keyword for `Scene`s and `Figure`s has been deprecated. Use `Figure(; size = ...` or `Scene(; size = ...)` instead, which better reflects that this is a unitless size and not a pixel resolution. The key could also come from `set_theme!` calls or related theming functions.\n└ @ Makie C:\\Users\\augus\\.julia\\packages\\Makie\\ND0gA\\src\\scenes.jl:220"
+  },
+  {
+    "objectID": "apuntes/cheatsheet-quarto.html",
+    "href": "apuntes/cheatsheet-quarto.html",
+    "title": "Pruebas de Quarto",
+    "section": "",
+    "text": "Documentacion de Quarto\n\nx = 100\ny = collect(3:x)\n\n98-element Vector{Int64}:\n   3\n   4\n   5\n   6\n   7\n   8\n   9\n  10\n  11\n  12\n  13\n  14\n  15\n   ⋮\n  89\n  90\n  91\n  92\n  93\n  94\n  95\n  96\n  97\n  98\n  99\n 100"
+  },
+  {
+    "objectID": "apuntes/index.html",
+    "href": "apuntes/index.html",
+    "title": "Cuadernos de MSSCAE2024",
+    "section": "",
+    "text": "Para hacer las simulaciones voy a probar Agents.jl. Hay un buen tutorial introductorio en el siguiente video Agents.jl: Introductory Tutorial\nModelo de Schelling\nCheat Sheet de Quarto",
+    "crumbs": [
+      "Inicio"
+    ]
   }
 ]
