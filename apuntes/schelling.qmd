@@ -177,3 +177,27 @@ adf, mdf = run!(schelling, pasos; adata)
 
 adf[end-10:end, :] # display only the last few rows
 ```
+
+###  Análisis completo
+
+```{julia}
+adata = [(:satisfecho, sum )]
+
+pasos = 150
+
+f = Figure()
+ax = Axis(f[1,1], title="Evolución de satisfacción", xlabel = "paso", ylabel = "Cantidad de agentes satisfechos")
+
+for tol in 3:7
+schelling = inicializar(;tolerancia=tol)
+
+# Colectamos datos de los agentes y del modelo/sistema
+adf, _ = run!(schelling, pasos; adata) 
+
+lines!(ax, adf.time,adf.sum_satisfecho, label="tol = $tol")
+
+end 
+
+axislegend()
+f
+```
