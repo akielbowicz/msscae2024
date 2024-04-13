@@ -1,75 +1,102 @@
 [
   {
-    "objectID": "apuntes/schelling.html",
-    "href": "apuntes/schelling.html",
+    "objectID": "docs/schelling.html",
+    "href": "docs/schelling.html",
     "title": "Modelo de Schelling",
     "section": "",
-    "text": "El tutorial de Agents.jl introduce el modelo de Schelling y lo vamos a reproducir acá.\nusing Agents"
+    "text": "El tutorial de Agents.jl introduce el modelo de Schelling y lo vamos a reproducir acá.\nusing Agents",
+    "crumbs": [
+      "Modelo de Schelling"
+    ]
   },
   {
-    "objectID": "apuntes/schelling.html#paso-1---definir-el-espacio",
-    "href": "apuntes/schelling.html#paso-1---definir-el-espacio",
+    "objectID": "docs/schelling.html#paso-1---definir-el-espacio",
+    "href": "docs/schelling.html#paso-1---definir-el-espacio",
     "title": "Modelo de Schelling",
     "section": "Paso 1 - Definir el espacio",
-    "text": "Paso 1 - Definir el espacio\n\nsize = (30, 30)\nespacio = GridSpaceSingle(size; periodic=false, metric=:chebyshev)\n\nGridSpaceSingle with size (30, 30), metric=chebyshev, periodic=false"
+    "text": "Paso 1 - Definir el espacio\n\nsize = (30, 30)\nespacio = GridSpaceSingle(size; periodic=false, metric=:chebyshev)\n\nGridSpaceSingle with size (30, 30), metric=chebyshev, periodic=false",
+    "crumbs": [
+      "Modelo de Schelling"
+    ]
   },
   {
-    "objectID": "apuntes/schelling.html#paso-2---definir-los-agentes",
-    "href": "apuntes/schelling.html#paso-2---definir-los-agentes",
+    "objectID": "docs/schelling.html#paso-2---definir-los-agentes",
+    "href": "docs/schelling.html#paso-2---definir-los-agentes",
     "title": "Modelo de Schelling",
     "section": "Paso 2 - Definir los agentes",
-    "text": "Paso 2 - Definir los agentes\n\n@agent struct Individuo(GridAgent{2})\n    satisfecho::Bool\n    grupo::Int\nend\n\n\ni0 = Individuo(id=0, pos=(1,1), satisfecho=false,grupo=1)\n\nIndividuo(0, (1, 1), false, 1)"
+    "text": "Paso 2 - Definir los agentes\n\n@agent struct Individuo(GridAgent{2})\n    satisfecho::Bool\n    grupo::Int\nend\n\n\ni0 = Individuo(id=0, pos=(1,1), satisfecho=false,grupo=1)\n\nIndividuo(0, (1, 1), false, 1)",
+    "crumbs": [
+      "Modelo de Schelling"
+    ]
   },
   {
-    "objectID": "apuntes/schelling.html#paso-3---definir-las-reglas-de-evolución",
-    "href": "apuntes/schelling.html#paso-3---definir-las-reglas-de-evolución",
+    "objectID": "docs/schelling.html#paso-3---definir-las-reglas-de-evolución",
+    "href": "docs/schelling.html#paso-3---definir-las-reglas-de-evolución",
     "title": "Modelo de Schelling",
     "section": "Paso 3 - Definir las reglas de evolución",
-    "text": "Paso 3 - Definir las reglas de evolución\n\nfunction vecinos_mismo_grupo(agente, modelo)\n    vecinos_de_mismo_grupo = 0\n\n    for vecino in nearby_agents(agente, modelo)\n        if agente.grupo == vecino.grupo\n            vecinos_de_mismo_grupo += 1\n        end\n    end\n    vecinos_de_mismo_grupo\nend\n\nfunction schelling_step!(agente, modelo)\n    tolerancia = modelo.tolerancia\n    \n    satisfecho(agente) = vecinos_mismo_grupo(agente, modelo) ≥ tolerancia\n    \n    if  satisfecho(agente)# \\ge y tab para hacer el simbolo de mayor o igual\n        agente.satisfecho = true\n    else\n        es_distinto(a) = a.id != agente.id && !satisfecho(a)\n        otro_agente = random_agent(modelo, es_distinto)\n        swap_agents!(agente, otro_agente, modelo)\n\n        agente.satisfecho = satisfecho(agente)\n        otro_agente.satisfecho = satisfecho(agente)\n    end\n\n    return\nend\n\nschelling_step! (generic function with 1 method)"
+    "text": "Paso 3 - Definir las reglas de evolución\n\nfunction vecinos_mismo_grupo(agente, modelo)\n    vecinos_de_mismo_grupo = 0\n\n    for vecino in nearby_agents(agente, modelo)\n        if agente.grupo == vecino.grupo\n            vecinos_de_mismo_grupo += 1\n        end\n    end\n    vecinos_de_mismo_grupo\nend\n\nfunction schelling_step!(agente, modelo)\n    tolerancia = modelo.tolerancia\n    \n    satisfecho(agente) = vecinos_mismo_grupo(agente, modelo) ≥ tolerancia\n    \n    if  satisfecho(agente)# \\ge y tab para hacer el simbolo de mayor o igual\n        agente.satisfecho = true\n    else\n        es_distinto(a) = a.id != agente.id && !satisfecho(a)\n        otro_agente = random_agent(modelo, es_distinto)\n        swap_agents!(agente, otro_agente, modelo)\n\n        agente.satisfecho = satisfecho(agente)\n        otro_agente.satisfecho = satisfecho(agente)\n    end\n\n    return\nend\n\nschelling_step! (generic function with 1 method)",
+    "crumbs": [
+      "Modelo de Schelling"
+    ]
   },
   {
-    "objectID": "apuntes/schelling.html#paso-4---inicializar-el-modelo",
-    "href": "apuntes/schelling.html#paso-4---inicializar-el-modelo",
+    "objectID": "docs/schelling.html#paso-4---inicializar-el-modelo",
+    "href": "docs/schelling.html#paso-4---inicializar-el-modelo",
     "title": "Modelo de Schelling",
     "section": "Paso 4 - Inicializar el modelo",
-    "text": "Paso 4 - Inicializar el modelo\n\nusing Random: Xoshiro\nseed = 1234\nrng = Xoshiro(seed)\n\nXoshiro(0x9951797c85a704f1, 0xb9d66be14dfba82b, 0xb170153285fd9556, 0xe90a07f7bdd1fd77, 0x9d4b5ee33e4bd661)\n\n\n\nproperties = Dict(:tolerancia =&gt; 3)\nmodelo = StandardABM(Individuo, espacio; properties, agent_step! =schelling_step!, rng)\n\nStandardABM with 0 agents of type Individuo\n agents container: Dict\n space: GridSpaceSingle with size (30, 30), metric=chebyshev, periodic=false\n scheduler: fastest\n properties: tolerancia\n\n\n\nag0 = add_agent_single!(modelo; satisfecho=false, grupo=1)\nag1 = add_agent_single!(modelo; satisfecho=false, grupo=1)\n\nIndividuo(2, (15, 17), false, 1)\n\n\n\nstep!(modelo)\n\nStandardABM with 2 agents of type Individuo\n agents container: Dict\n space: GridSpaceSingle with size (30, 30), metric=chebyshev, periodic=false\n scheduler: fastest\n properties: tolerancia\n\n\n\nCrear funcion de inicializacion del sistema integrando todo lo anterior\n\nfunction inicializar(; total_agentes=nothing, tamano_grilla=(30, 30), tolerancia=3, rng_seed=123, grilla_periodica=true)\n    if isnothing(total_agentes)\n        total_agentes = prod(tamano_grilla)::Int\n    end\n\n    space = GridSpaceSingle(tamano_grilla; periodic=grilla_periodica)\n    properties = Dict(:tolerancia =&gt; tolerancia)\n    rng = Xoshiro(rng_seed)\n    modelo = StandardABM(\n        Individuo, space;\n        agent_step! = schelling_step!, properties, rng,\n        container=Vector, # agents are not removed, so we us this\n        scheduler=Schedulers.Randomly() # all agents are activated once at random\n    )\n\n    # Inicializo los agentes de manera aleatoria\n    for n in 1:total_agentes\n        add_agent_single!(modelo; satisfecho=false, grupo=n &lt; total_agentes / 2 ? 1 : 2)\n    end\n\n    satisfecho(agente) = vecinos_mismo_grupo(agente,modelo) ≥ modelo.tolerancia\n\n    for ag in allagents(modelo)\n        ag.satisfecho = satisfecho(ag)\n    end\n\n    return modelo\n\nend\n\nschelling = inicializar()\n\nStandardABM with 900 agents of type Individuo\n agents container: Vector\n space: GridSpaceSingle with size (30, 30), metric=chebyshev, periodic=true\n scheduler: Agents.Schedulers.Randomly\n properties: tolerancia"
+    "text": "Paso 4 - Inicializar el modelo\n\nusing Random: Xoshiro\nseed = 1234\nrng = Xoshiro(seed)\n\nXoshiro(0x9951797c85a704f1, 0xb9d66be14dfba82b, 0xb170153285fd9556, 0xe90a07f7bdd1fd77, 0x9d4b5ee33e4bd661)\n\n\n\nproperties = Dict(:tolerancia =&gt; 3)\nmodelo = StandardABM(Individuo, espacio; properties, agent_step! =schelling_step!, rng)\n\nStandardABM with 0 agents of type Individuo\n agents container: Dict\n space: GridSpaceSingle with size (30, 30), metric=chebyshev, periodic=false\n scheduler: fastest\n properties: tolerancia\n\n\n\nag0 = add_agent_single!(modelo; satisfecho=false, grupo=1)\nag1 = add_agent_single!(modelo; satisfecho=false, grupo=1)\n\nIndividuo(2, (15, 17), false, 1)\n\n\n\nstep!(modelo)\n\nStandardABM with 2 agents of type Individuo\n agents container: Dict\n space: GridSpaceSingle with size (30, 30), metric=chebyshev, periodic=false\n scheduler: fastest\n properties: tolerancia\n\n\n\nCrear funcion de inicializacion del sistema integrando todo lo anterior\n\nfunction inicializar(; total_agentes=nothing, tamano_grilla=(30, 30), tolerancia=3, rng_seed=123, grilla_periodica=true)\n    if isnothing(total_agentes)\n        total_agentes = prod(tamano_grilla)::Int\n    end\n\n    space = GridSpaceSingle(tamano_grilla; periodic=grilla_periodica)\n    properties = Dict(:tolerancia =&gt; tolerancia)\n    rng = Xoshiro(rng_seed)\n    modelo = StandardABM(\n        Individuo, space;\n        agent_step! = schelling_step!, properties, rng,\n        container=Vector, # agents are not removed, so we us this\n        scheduler=Schedulers.Randomly() # all agents are activated once at random\n    )\n\n    # Inicializo los agentes de manera aleatoria\n    for n in 1:total_agentes\n        add_agent_single!(modelo; satisfecho=false, grupo=n &lt; total_agentes / 2 ? 1 : 2)\n    end\n\n    satisfecho(agente) = vecinos_mismo_grupo(agente,modelo) ≥ modelo.tolerancia\n\n    for ag in allagents(modelo)\n        ag.satisfecho = satisfecho(ag)\n    end\n\n    return modelo\n\nend\n\nschelling = inicializar()\n\nStandardABM with 900 agents of type Individuo\n agents container: Vector\n space: GridSpaceSingle with size (30, 30), metric=chebyshev, periodic=true\n scheduler: Agents.Schedulers.Randomly\n properties: tolerancia",
+    "crumbs": [
+      "Modelo de Schelling"
+    ]
   },
   {
-    "objectID": "apuntes/schelling.html#paso-5---evolucionar-el-sistema",
-    "href": "apuntes/schelling.html#paso-5---evolucionar-el-sistema",
+    "objectID": "docs/schelling.html#paso-5---evolucionar-el-sistema",
+    "href": "docs/schelling.html#paso-5---evolucionar-el-sistema",
     "title": "Modelo de Schelling",
     "section": "Paso 5 - Evolucionar el sistema",
-    "text": "Paso 5 - Evolucionar el sistema\n\nstep!(schelling)\n\nStandardABM with 900 agents of type Individuo\n agents container: Vector\n space: GridSpaceSingle with size (30, 30), metric=chebyshev, periodic=true\n scheduler: Agents.Schedulers.Randomly\n properties: tolerancia\n\n\n\nn_pasos = 3\nstep!(schelling, n_pasos)\n\nStandardABM with 900 agents of type Individuo\n agents container: Vector\n space: GridSpaceSingle with size (30, 30), metric=chebyshev, periodic=true\n scheduler: Agents.Schedulers.Randomly\n properties: tolerancia\n\n\n\ncondicion_terminacion(modelo, tiempo) = tiempo &lt;= 150\nstep!(schelling, condicion_terminacion)\n\nStandardABM with 900 agents of type Individuo\n agents container: Vector\n space: GridSpaceSingle with size (30, 30), metric=chebyshev, periodic=true\n scheduler: Agents.Schedulers.Randomly\n properties: tolerancia"
+    "text": "Paso 5 - Evolucionar el sistema\n\nstep!(schelling)\n\nStandardABM with 900 agents of type Individuo\n agents container: Vector\n space: GridSpaceSingle with size (30, 30), metric=chebyshev, periodic=true\n scheduler: Agents.Schedulers.Randomly\n properties: tolerancia\n\n\n\nn_pasos = 3\nstep!(schelling, n_pasos)\n\nStandardABM with 900 agents of type Individuo\n agents container: Vector\n space: GridSpaceSingle with size (30, 30), metric=chebyshev, periodic=true\n scheduler: Agents.Schedulers.Randomly\n properties: tolerancia\n\n\n\ncondicion_terminacion(modelo, tiempo) = tiempo &lt;= 150\nstep!(schelling, condicion_terminacion)\n\nStandardABM with 900 agents of type Individuo\n agents container: Vector\n space: GridSpaceSingle with size (30, 30), metric=chebyshev, periodic=true\n scheduler: Agents.Schedulers.Randomly\n properties: tolerancia",
+    "crumbs": [
+      "Modelo de Schelling"
+    ]
   },
   {
-    "objectID": "apuntes/schelling.html#paso-6---visualizar-el-sistema",
-    "href": "apuntes/schelling.html#paso-6---visualizar-el-sistema",
+    "objectID": "docs/schelling.html#paso-6---visualizar-el-sistema",
+    "href": "docs/schelling.html#paso-6---visualizar-el-sistema",
     "title": "Modelo de Schelling",
     "section": "Paso 6 - Visualizar el sistema",
-    "text": "Paso 6 - Visualizar el sistema\n\n# using CairoMakie\nusing WGLMakie\n\n\ncolorsatisfecho(agente) = (!agente.satisfecho ? :red\n                         : agente.grupo == 1 ? :blue : :green)\ncolorgrupo(agente) = agente.grupo == 1 ? :red : :green\nmarkergrupo(agente) = agente.grupo == 1 ? :circle : :rect\n\nmarkergrupo (generic function with 1 method)\n\n\n\nfigure, _ = abmplot(schelling; agent_color = colorsatisfecho, agent_marker = markergrupo, as = 10)\nfigure # returning the figure displays it\n\n┌ Warning: Found `resolution` in the theme when creating a `Scene`. The `resolution` keyword for `Scene`s and `Figure`s has been deprecated. Use `Figure(; size = ...` or `Scene(; size = ...)` instead, which better reflects that this is a unitless size and not a pixel resolution. The key could also come from `set_theme!` calls or related theming functions.\n└ @ Makie C:\\Users\\augus\\.julia\\packages\\Makie\\ND0gA\\src\\scenes.jl:220\n┌ Warning: Keywords `as, am, ac` has been deprecated in favor of\n│           `agent_size, agent_marker, agent_color`\n└ @ AgentsVisualizations C:\\Users\\augus\\.julia\\packages\\Agents\\EOn0z\\ext\\AgentsVisualizations\\src\\abmplot.jl:70\n\n\n\n  \n    \n      \n      \n      \n    \n    \n      \n      \n      \n    \n  \n  \n    \n      \n      \n        \n      \n    \n    \n      \n      \n        \n      \n    \n  \n\n\n\nPara crear una visualizacion interactiva\n\n# using GLMakie\nfigure, _ = abmplot(schelling; add_controls=true, agent_color = colorsatisfecho, agent_marker = markergrupo, as = 10)\nfigure # returning the figure displays it\n\n┌ Warning: Found `resolution` in the theme when creating a `Scene`. The `resolution` keyword for `Scene`s and `Figure`s has been deprecated. Use `Figure(; size = ...` or `Scene(; size = ...)` instead, which better reflects that this is a unitless size and not a pixel resolution. The key could also come from `set_theme!` calls or related theming functions.\n└ @ Makie C:\\Users\\augus\\.julia\\packages\\Makie\\ND0gA\\src\\scenes.jl:220"
+    "text": "Paso 6 - Visualizar el sistema\n\n# using CairoMakie\nusing WGLMakie\n\n\ncolorsatisfecho(agente) = (!agente.satisfecho ? :red\n                         : agente.grupo == 1 ? :blue : :green)\ncolorgrupo(agente) = agente.grupo == 1 ? :red : :green\nmarkergrupo(agente) = agente.grupo == 1 ? :circle : :rect\n\nmarkergrupo (generic function with 1 method)\n\n\n\nfigure, _ = abmplot(schelling; agent_color = colorsatisfecho, agent_marker = markergrupo, as = 10)\nfigure # returning the figure displays it\n\n┌ Warning: Found `resolution` in the theme when creating a `Scene`. The `resolution` keyword for `Scene`s and `Figure`s has been deprecated. Use `Figure(; size = ...` or `Scene(; size = ...)` instead, which better reflects that this is a unitless size and not a pixel resolution. The key could also come from `set_theme!` calls or related theming functions.\n└ @ Makie C:\\Users\\augus\\.julia\\packages\\Makie\\ND0gA\\src\\scenes.jl:220\n┌ Warning: Keywords `as, am, ac` has been deprecated in favor of\n│           `agent_size, agent_marker, agent_color`\n└ @ AgentsVisualizations C:\\Users\\augus\\.julia\\packages\\Agents\\EOn0z\\ext\\AgentsVisualizations\\src\\abmplot.jl:70\n\n\n\n  \n    \n      \n      \n      \n    \n    \n      \n      \n      \n    \n  \n  \n    \n      \n      \n        \n      \n    \n    \n      \n      \n        \n      \n    \n  \n\n\n\nPara crear una visualizacion interactiva\n\n# using GLMakie\nfigure, _ = abmplot(schelling; add_controls=true, agent_color = colorsatisfecho, agent_marker = markergrupo, as = 10)\nfigure # returning the figure displays it\n\n┌ Warning: Found `resolution` in the theme when creating a `Scene`. The `resolution` keyword for `Scene`s and `Figure`s has been deprecated. Use `Figure(; size = ...` or `Scene(; size = ...)` instead, which better reflects that this is a unitless size and not a pixel resolution. The key could also come from `set_theme!` calls or related theming functions.\n└ @ Makie C:\\Users\\augus\\.julia\\packages\\Makie\\ND0gA\\src\\scenes.jl:220",
+    "crumbs": [
+      "Modelo de Schelling"
+    ]
   },
   {
-    "objectID": "apuntes/schelling.html#paso-7---colectar-datos-del-sistema",
-    "href": "apuntes/schelling.html#paso-7---colectar-datos-del-sistema",
+    "objectID": "docs/schelling.html#paso-7---colectar-datos-del-sistema",
+    "href": "docs/schelling.html#paso-7---colectar-datos-del-sistema",
     "title": "Modelo de Schelling",
     "section": "Paso 7 - Colectar datos del sistema",
-    "text": "Paso 7 - Colectar datos del sistema\n\nadata = [:pos, :satisfecho, :grupo]\n\nschelling = inicializar()\npasos = 5\n\n# Colectamos datos de los agentes y del modelo/sistema\nadf, mdf = run!(schelling, pasos; adata) \n\nadf[end-10:end, :] # display only the last few rows\n\n\n11×5 DataFrame\n\n\n\nRow\ntime\nid\npos\nsatisfecho\ngrupo\n\n\n\nInt64\nInt64\nTuple…\nBool\nInt64\n\n\n\n\n1\n5\n890\n(17, 27)\ntrue\n2\n\n\n2\n5\n891\n(26, 24)\ntrue\n2\n\n\n3\n5\n892\n(30, 11)\ntrue\n2\n\n\n4\n5\n893\n(19, 5)\ntrue\n2\n\n\n5\n5\n894\n(27, 26)\ntrue\n2\n\n\n6\n5\n895\n(9, 16)\ntrue\n2\n\n\n7\n5\n896\n(4, 1)\ntrue\n2\n\n\n8\n5\n897\n(27, 15)\ntrue\n2\n\n\n9\n5\n898\n(16, 15)\ntrue\n2\n\n\n10\n5\n899\n(12, 8)\ntrue\n2\n\n\n11\n5\n900\n(2, 29)\ntrue\n2\n\n\n\n\n\n\n\n\nAnálisis completo\n\nadata = [(:satisfecho, sum )]\n\npasos = 150\n\nf = Figure()\nax = Axis(f[1,1], title=\"Evolución de satisfacción\", xlabel = \"paso\", ylabel = \"Cantidad de agentes satisfechos\")\n\nfor tol in 3:7\nschelling = inicializar(;tolerancia=tol)\n\n# Colectamos datos de los agentes y del modelo/sistema\nadf, _ = run!(schelling, pasos; adata) \n\nlines!(ax, adf.time,adf.sum_satisfecho, label=\"tol = $tol\")\n\nend \n\naxislegend()\nf\n\n┌ Warning: Found `resolution` in the theme when creating a `Scene`. The `resolution` keyword for `Scene`s and `Figure`s has been deprecated. Use `Figure(; size = ...` or `Scene(; size = ...)` instead, which better reflects that this is a unitless size and not a pixel resolution. The key could also come from `set_theme!` calls or related theming functions.\n└ @ Makie C:\\Users\\augus\\.julia\\packages\\Makie\\ND0gA\\src\\scenes.jl:220"
+    "text": "Paso 7 - Colectar datos del sistema\n\nadata = [:pos, :satisfecho, :grupo]\n\nschelling = inicializar()\npasos = 5\n\n# Colectamos datos de los agentes y del modelo/sistema\nadf, mdf = run!(schelling, pasos; adata) \n\nadf[end-10:end, :] # display only the last few rows\n\n\n11×5 DataFrame\n\n\n\nRow\ntime\nid\npos\nsatisfecho\ngrupo\n\n\n\nInt64\nInt64\nTuple…\nBool\nInt64\n\n\n\n\n1\n5\n890\n(17, 27)\ntrue\n2\n\n\n2\n5\n891\n(26, 24)\ntrue\n2\n\n\n3\n5\n892\n(30, 11)\ntrue\n2\n\n\n4\n5\n893\n(19, 5)\ntrue\n2\n\n\n5\n5\n894\n(27, 26)\ntrue\n2\n\n\n6\n5\n895\n(9, 16)\ntrue\n2\n\n\n7\n5\n896\n(4, 1)\ntrue\n2\n\n\n8\n5\n897\n(27, 15)\ntrue\n2\n\n\n9\n5\n898\n(16, 15)\ntrue\n2\n\n\n10\n5\n899\n(12, 8)\ntrue\n2\n\n\n11\n5\n900\n(2, 29)\ntrue\n2\n\n\n\n\n\n\n\n\nAnálisis completo\n\nadata = [(:satisfecho, sum )]\n\npasos = 150\n\nf = Figure()\nax = Axis(f[1,1], title=\"Evolución de satisfacción\", xlabel = \"paso\", ylabel = \"Cantidad de agentes satisfechos\")\n\nfor tol in 3:7\nschelling = inicializar(;tolerancia=tol)\n\n# Colectamos datos de los agentes y del modelo/sistema\nadf, _ = run!(schelling, pasos; adata) \n\nlines!(ax, adf.time,adf.sum_satisfecho, label=\"tol = $tol\")\n\nend \n\naxislegend()\nf\n\n┌ Warning: Found `resolution` in the theme when creating a `Scene`. The `resolution` keyword for `Scene`s and `Figure`s has been deprecated. Use `Figure(; size = ...` or `Scene(; size = ...)` instead, which better reflects that this is a unitless size and not a pixel resolution. The key could also come from `set_theme!` calls or related theming functions.\n└ @ Makie C:\\Users\\augus\\.julia\\packages\\Makie\\ND0gA\\src\\scenes.jl:220",
+    "crumbs": [
+      "Modelo de Schelling"
+    ]
   },
   {
-    "objectID": "apuntes/cheatsheet-quarto.html",
-    "href": "apuntes/cheatsheet-quarto.html",
-    "title": "Pruebas de Quarto",
-    "section": "",
-    "text": "Documentacion de Quarto\n\nx = 100\ny = collect(3:x)\n\n98-element Vector{Int64}:\n   3\n   4\n   5\n   6\n   7\n   8\n   9\n  10\n  11\n  12\n  13\n  14\n  15\n   ⋮\n  89\n  90\n  91\n  92\n  93\n  94\n  95\n  96\n  97\n  98\n  99\n 100"
-  },
-  {
-    "objectID": "apuntes/index.html",
-    "href": "apuntes/index.html",
+    "objectID": "index.html",
+    "href": "index.html",
     "title": "Cuadernos de MSSCAE2024",
     "section": "",
     "text": "Para hacer las simulaciones voy a probar Agents.jl. Hay un buen tutorial introductorio en el siguiente video Agents.jl: Introductory Tutorial\nModelo de Schelling\nCheat Sheet de Quarto",
     "crumbs": [
       "Inicio"
+    ]
+  },
+  {
+    "objectID": "docs/cheatsheet-quarto.html",
+    "href": "docs/cheatsheet-quarto.html",
+    "title": "Pruebas de Quarto",
+    "section": "",
+    "text": "Documentacion de Quarto\n\nx = 100\ny = collect(3:x)\n\n98-element Vector{Int64}:\n   3\n   4\n   5\n   6\n   7\n   8\n   9\n  10\n  11\n  12\n  13\n  14\n  15\n   ⋮\n  89\n  90\n  91\n  92\n  93\n  94\n  95\n  96\n  97\n  98\n  99\n 100",
+    "crumbs": [
+      "Tips de Quarto"
     ]
   }
 ]
